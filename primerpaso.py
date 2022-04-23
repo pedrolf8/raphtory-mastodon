@@ -2,12 +2,13 @@
 
 import csv
 import json
+import sys
 import pandas as pd
 from subprocess import call
 import ast
 
 f = open('cc.csv', 'w')
-with open('znark.us.csv', newline='') as File:
+with open(sys.argv[1] + '.csv', newline='') as File:
     reader = csv.reader(File)
     writer = csv.writer(f)
     
@@ -50,10 +51,17 @@ for row in reader:
         x = len(row)
 r.close()
 
+call(['rm', '-r', sys.argv[1] ])
+call (['mkdir', sys.argv[1]])
+call (['cp', '-r', 'Mastodon', './'+sys.argv[1]])
+call (['cp', './cc.csv', './'+sys.argv[1]])
+
+
+
 
 ll = x
 rt = open('cc.csv', 'r')
-c = open('cc1.csv', 'w')
+c = open('./'+sys.argv[1] + '/' + sys.argv[1] +'.csv', 'w')
 wt = csv.reader(rt)
 ww = csv.writer(c)
 for row in wt:
@@ -75,6 +83,21 @@ for row in wt:
 rt.close()
 c.close()
 
+call (['cp', './'+sys.argv[1] + '/' + sys.argv[1] +'.csv', './' + sys.argv[1] + '/Mastodon/src/main/scala/com/raphtory/mastodon/data' ])
 
+h1 = open('./' + sys.argv[1] + '/Mastodon/src/main/scala/com/raphtory/mastodon/Runner.scala', 'r')
+h2 = open('./' + sys.argv[1] + '/Mastodon/src/main/scala/com/raphtory/mastodon/Runner2.scala', 'w')
+
+for line in h1:
+    if("val source" in line):
+        h2.write('        val source    = new FileSpout("src/main/scala/com/raphtory/mastodon/data", "' + sys.argv[1] +'.csv") \n')
+    else:
+        h2.write(line)
+
+h2.close()
+h1.close()
+
+call(['rm', './' + sys.argv[1] + '/Mastodon/src/main/scala/com/raphtory/mastodon/Runner.scala'])
+call(['mv', './' + sys.argv[1] + '/Mastodon/src/main/scala/com/raphtory/mastodon/Runner2.scala', './' + sys.argv[1] + '/Mastodon/src/main/scala/com/raphtory/mastodon/Runner.scala'])
 
 #g = load_dataset('cc.csv')
