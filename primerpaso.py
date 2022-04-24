@@ -99,5 +99,42 @@ h1.close()
 
 call(['rm', './' + sys.argv[1] + '/Mastodon/src/main/scala/com/raphtory/mastodon/Runner.scala'])
 call(['mv', './' + sys.argv[1] + '/Mastodon/src/main/scala/com/raphtory/mastodon/Runner2.scala', './' + sys.argv[1] + '/Mastodon/src/main/scala/com/raphtory/mastodon/Runner.scala'])
+call(['rm', '-r', './' + sys.argv[1] + '/Mastodon/src/main/scala/com/raphtory/mastodon/graphbuilders/MastUserGraphBuilder.scala'])
 
-#g = load_dataset('cc.csv')
+j2 = open('./' + sys.argv[1] + '/Mastodon/src/main/scala/com/raphtory/mastodon/graphbuilders/MastUserGraphBuilder.scala', 'a')
+
+j2.write('package com.raphtory.mastodon.graphbuilders\n\n')
+j2.write('import com.raphtory.core.components.graphbuilder.GraphBuilder\n')
+j2.write('import com.raphtory.core.implementations.generic.messaging._\n')
+j2.write('import com.raphtory.core.model.graph.{ImmutableProperty, Properties, Type}\n')
+j2.write('import java.text.SimpleDateFormat\n')
+j2.write('class MastUserGraphBuilder extends GraphBuilder[String]{\n\n')
+j2.write('    override def parseTuple(tuple: String) = {\n')
+j2.write('        val fileLine = tuple.split(";").map(_.trim)\n')
+j2.write('        val sourceNode = fileLine(1).toInt\n')
+lo = 0
+loo = 0
+while(lo<(x-2)):
+    y= lo+2
+    z = '        val targetNodement'+str(lo)+'= fileLine('+str(y)+').toInt\n'
+    j2.write(z)
+    lo = lo + 1
+while(loo<(x-2)):
+    j2.write('            if (targetNodement'+ str(loo) +'> 0 && targetNodement'+ str(loo) +'!= sourceNode) {\n')
+    j2.write('                val creationDate = dateToUnixTime(timestamp = fileLine(0).slice(0, 23))\n')
+    j2.write('                addVertex(creationDate, sourceNode, Type("User"))\n')
+    j2.write('                addVertex(creationDate, targetNodement'+ str(loo) +', Type("User"))\n')
+    j2.write('                addEdge(creationDate, sourceNode, targetNodement'+ str(loo) +', Type("User to User"))\n')
+    j2.write('            }\n\n')
+    loo = loo + 1
+j2.write('    def dateToUnixTime (timestamp: => String): Long = {\n')
+j2.write('        val sdf   = new SimpleDateFormat("yyyy-MM-dd\'T\'HH:mm:ss")\n')
+j2.write('        val dt    = sdf.parse(timestamp)\n')
+j2.write('        val epoch = dt.getTime\n')
+j2.write('        epoch\n')
+j2.write('    }\n\n\n')
+j2.write('}')
+j2.write('')
+
+
+
